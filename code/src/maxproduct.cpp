@@ -47,8 +47,24 @@ MaxProduct::MaxProduct(const std::string& originalString, const size_t runLength
 
 void MaxProduct::calculateRun(const NonZeroRun& run)
 {
-    // STUB
-    (void)run;
+    std::string::const_iterator iter = run.first;
+    while (iter <= run.second - runLength_)
+    {
+        uint64_t product = 1;
+
+        for (size_t digitsCalculated = 0; digitsCalculated < runLength_; ++digitsCalculated)
+        {
+            char digitString = *(iter + digitsCalculated);
+            // Convert this digit from ASCII to a numerical value 1..9.
+            uint64_t converted = digitString - '0';
+
+            product *= converted;
+        }
+
+        updateMax(product, std::make_pair(iter, iter + runLength_));
+
+        ++iter;
+    }
 }
 
 void MaxProduct::updateMax(const uint64_t product, const NonZeroRun& range)
