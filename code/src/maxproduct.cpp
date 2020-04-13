@@ -4,11 +4,37 @@ namespace Hpc {
 
 std::vector<NonZeroRun> getNonZeroRuns(const std::string& input, const size_t minRunLength)
 {
-    // STUB
-    (void)input;
-    (void)minRunLength;
+    const auto inputEnd = input.end();
+    std::vector<NonZeroRun> nonZeroRuns{};
+    NonZeroRun currentRun = std::make_pair(input.begin(), input.begin());
 
-    return {};
+    while (currentRun.first < inputEnd)
+    {
+        // Skip any values NOT between 1..9.
+        while (currentRun.first < inputEnd && (*currentRun.first < '1' || *currentRun.first > '9'))
+        {
+            ++currentRun.first;
+        }
+
+        currentRun.second = currentRun.first;
+
+        // Scan until we reach any value NOT between 1..9.
+        while (currentRun.second < inputEnd && *currentRun.second >= '1' && *currentRun.second <= '9')
+        {
+            ++currentRun.second;
+        }
+
+        // Add to the collection only if the run length is long enough.
+        if (static_cast<size_t>(currentRun.second - currentRun.first) >= minRunLength)
+        {
+            nonZeroRuns.push_back(std::make_pair(currentRun.first, currentRun.second));
+        }
+
+        // Bump ahead to avoid re-parsing the same values again.
+        currentRun.first = currentRun.second;
+    }
+
+    return nonZeroRuns;
 }
 
 MaxProduct::MaxProduct(const std::string& originalString, const size_t runLength)
