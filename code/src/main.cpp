@@ -1,3 +1,5 @@
+#include "../include/debugging.h"
+#include "../include/maxproduct.h"
 #include "../include/testing.h"
 
 #include <string>
@@ -32,17 +34,27 @@ const std::string hpcString{
 int main()
 {
     // For debugging only.
-    Debugging::Testing::runTests();
+    //Debugging::Testing::runTests();
 
 
     // Step 1: Split the number into runs NOT containing 0's, since we know their product will equal 0.
+    constexpr size_t runLength = 8;
+
+    std::vector<Hpc::NonZeroRun> nonZeroRun = Hpc::getNonZeroRuns(hpcString, runLength);
+
+    Hpc::MaxProduct maxProduct(hpcString, runLength);
 
 
     // Step 2: For each of the runs returned, scan [runLength] digits at a time and calculate their product.
+    for (Hpc::NonZeroRun run : nonZeroRun)
+    {
+        maxProduct.calculateRun(run);
+    }
 
 
     // Step 3: Display the [runLength] digits that produced the largest product.
-
+    constexpr bool showOriginalNumber{ false };
+    Debugging::displayFound(maxProduct, showOriginalNumber);
 
     return 0;
 }
